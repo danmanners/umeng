@@ -20,7 +20,7 @@ kind: Service
 metadata:
   name: umeng-external-name
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: dreamcatcher.danmanners.io
+    external-dns.alpha.kubernetes.io/hostname: dreamcatcher.danmanners.com
     external-dns.alpha.kubernetes.io/ttl: "300"
   labels:
     app: umeng
