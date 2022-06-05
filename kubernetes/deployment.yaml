@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: umeng
+  name: umeng
+spec:
+  progressDeadlineSeconds: 30
+  replicas: 3
+  selector:
+    matchLabels:
+      app: umeng
+  strategy:
+    rollingUpdate:
+      maxSurge: 30%
+      maxUnavailable: 30%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: umeng
+    spec:
+      containers:
+      - name: umeng
+        image: image-tag-goes-here
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "1"
+            memory: 256Mi
+          requests:
+            cpu: 500m
+            memory: 96Mi
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 3

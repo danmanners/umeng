@@ -1,0 +1,46 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: umeng-k3s-cert
+spec:
+  commonName: dreamcatcher.danmanners.com
+  secretName: umeng-k3s-cert
+  dnsNames:
+    - dreamcatcher.danmanners.com
+  issuerRef:
+    name: acme-prod
+    kind: ClusterIssuer
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dreamcatcher-web
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`dreamcatcher.danmanners.com`)
+      kind: Rule
+      services:
+        - name: umeng
+          port: 3000
+      middlewares:
+        - name: http-https-redirectscheme
+          namespace: kube-system
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dreamcatcher-websecure
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`dreamcatcher.danmanners.com`)
+      kind: Rule
+      services:
+        - name: umeng
+          port: 3000
+  tls:
+    secretName: umeng-k3s-cert
