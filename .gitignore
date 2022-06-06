@@ -16,3 +16,9 @@ test/
 .lsp/
 
 .clj-kondo/
+
+# Supabase
+**/supabase/.branches
+**/supabase/.temp
+
+backend/data/

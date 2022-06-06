@@ -1,0 +1,8 @@
+{:full-name "umeng/backend"
+ :ns-name   "umeng.backend"
+ :sanitized "umeng/backend"
+ :name      "backend"
+ :modules   {:root         "modules"
+             :repositories [{:url  "https://github.com/kit-clj/modules.git"
+                             :tag  "master"
+                             :name "kit-modules"}]}}

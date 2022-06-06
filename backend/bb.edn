@@ -1,0 +1,40 @@
+{:min-bb-version "0.7.0"
+ :deps  {failjure/failjure {:mvn/version "2.2.0"}}
+ :tasks {:requires ([babashka.fs :as fs]
+                    [babashka.tasks :refer [shell]])
+
+         run       {:doc  "starts the app"
+                    :task (shell {:dir "."} "clj -M:dev")}
+
+         nrepl     {:doc  "starts the nREPL"
+                    :task (shell {:dir "."} "clj -M:dev:nrepl")}
+         
+         test      {:doc  "runs tests"
+                    :task (shell {:dir "."} "clj -M:test")}
+         
+         uberjar   {:doc  "builds the uberjar"
+                    :task (shell {:dir "."} "clj -T:build all")}
+
+         format    {:doc  "Formats codebase"
+                    :task (shell {:dir "src"} "cljstyle fix")}
+
+         deploy    {:doc "Builds a docker image, publishes to DockerHub, then deploys it to Digital Ocean App Platform"
+                    :task (do
+                            (let [time-stamp (-> (java.time.LocalDateTime/now)
+                                                 str
+                                                 (clojure.string/replace "T" "-")
+                                                 (clojure.string/replace ":" "-")
+                                                 (clojure.string/replace "." "-"))]
+                              (shell
+                               {:dir "."}
+                               (str "docker build . -t jgoodhcg/umeng:latest -t jgoodhcg/umeng:"
+                                    time-stamp))
+                              (shell
+                               {:dir "."}
+                               "docker push jgoodhcg/umeng:latest")
+                              (shell
+                               {:dir "."}
+                               (str "docker push jgoodhcg/umeng:" time-stamp))
+                              (shell
+                               {:dir "."}
+                               "doctl apps create-deployment 5d984be2-26fc-4e29-8f84-2dc3ffd86067")))}}}
